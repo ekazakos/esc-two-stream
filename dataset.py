@@ -15,20 +15,20 @@ class UrbanSound8KDataset(data.Dataset):
                                  self.dataset[index]['features']['chroma'],
                                  self.dataset[index]['features']['tonnetz'],
                                  self.dataset[index]['features']['spectral_contrast']))
-            feature = torch.from_numpy(feature).unsqueeze(0)
+            feature = torch.from_numpy(feature.astype(np.float32)).unsqueeze(0)
         elif self.mode == 'MC':
             feature = np.vstack((self.dataset[index]['features']['mfcc'],
                                  self.dataset[index]['features']['chroma'],
                                  self.dataset[index]['features']['tonnetz'],
                                  self.dataset[index]['features']['spectral_contrast']))
-            feature = torch.from_numpy(feature).unsqueeze(0)
+            feature = torch.from_numpy(feature.astype(np.float32)).unsqueeze(0)
         elif self.mode == 'MLMC':
             feature = np.vstack((self.dataset[index]['features']['logmelspec'],
                                  self.dataset[index]['features']['mfcc'],
                                  self.dataset[index]['features']['chroma'],
                                  self.dataset[index]['features']['tonnetz'],
                                  self.dataset[index]['features']['spectral_contrast']))
-            feature = torch.from_numpy(feature).unsqueeze(0)
+            feature = torch.from_numpy(feature.astype(np.float32)).unsqueeze(0)
         elif self.mode == 'LMC+MC':
             lmc = np.vstack((self.dataset[index]['features']['logmelspec'],
                              self.dataset[index]['features']['chroma'],
@@ -39,7 +39,7 @@ class UrbanSound8KDataset(data.Dataset):
                             self.dataset[index]['features']['chroma'],
                             self.dataset[index]['features']['tonnetz'],
                             self.dataset[index]['features']['spectral_contrast']))
-            feature = (torch.from_numpy(lmc).unsqueeze(0), torch.from_numpy(mc).unsqueeze(0))
+            feature = (torch.from_numpy(lmc.astype(np.float32)).unsqueeze(0), torch.from_numpy(mc.astype(np.float32)).unsqueeze(0))
         label = self.dataset[index]['classID']
         return feature, label
 
