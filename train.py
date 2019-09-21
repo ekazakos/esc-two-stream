@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='ESC Fusion model')
 
 parser.add_argument('mode', choices=['LMC', 'MC', 'MLMC', 'LMC+MC'])
 parser.add_argument('--train_pickle', type=Path)
-parser.add_argument('--test_pickle', nargs='+', type=Path)
+parser.add_argument('--test_pickle', type=Path)
 parser.add_argument('--epochs', default=100, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('-b', '--batch-size', default=32, type=int,
