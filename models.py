@@ -19,10 +19,10 @@ class ESCModel(nn.Module):
         self.batch_norm3 = nn.BatchNorm2d(64)
         self.relu3 = nn.ReLU()
 
-        self.conv4 = nn.Conv2d(64, 64, 3, stride=1, padding=1)
+        self.conv4 = nn.Conv2d(64, 64, 3, stride=2, padding=1)
         self.batch_norm4 = nn.BatchNorm2d(64)
         self.relu4 = nn.ReLU()
-        self.max_pool4 = nn.MaxPool2d(2)
+        #self.max_pool4 = nn.MaxPool2d(2)
         self.dropout4 = nn.Dropout2d(p=0.5)
 
 
@@ -49,7 +49,7 @@ class ESCModel(nn.Module):
         x = self.conv4(x)
         x = self.batch_norm4(x)
         x = self.relu4(x)
-        x = self.max_pool4(x)
+        #x = self.max_pool4(x)
         x = self.dropout4(x)
 
         x = x.flatten(1)
