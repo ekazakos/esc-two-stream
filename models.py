@@ -26,7 +26,7 @@ class ESCModel(nn.Module):
         self.dropout4 = nn.Dropout2d(p=0.5)
 
 
-        self.fc1 = nn.Linear(64*11*22, 1024)
+        self.fc1 = nn.Linear(64*10*21, 1024)
         self.sigm = nn.Sigmoid()
         self.dropout_fc1 = nn.Dropout(p=0.5)
         self.fc2 = nn.Linear(1024, 10)
@@ -51,8 +51,8 @@ class ESCModel(nn.Module):
         x = self.relu4(x)
         x = self.max_pool4(x)
         x = self.dropout4(x)
-        print(x.shape)
 
+        x = x.flatten(1)
         x = self.fc1(x)
         x = self.sigm(x)
         x = self.dropout_fc1(x)
