@@ -51,6 +51,7 @@ class ESCModel(nn.Module):
         x = self.relu4(x)
         x = self.max_pool4(x)
         x = self.dropout4(x)
+        print(x.shape)
 
         x = self.fc1(x)
         x = self.sigm(x)
