@@ -7,7 +7,7 @@ import pickle
 class UrbanSound8KDataset(data.Dataset):
     def __init__(self, dataset_path, split, mode):
         self.dataset = []
-        if split=='train':
+        if split == 'train':
             self.dataset.append(pickle.load(open(dataset_path / 'dataset_train_augmented1.pkl', 'rb')))
             self.dataset.append(pickle.load(open(dataset_path / 'dataset_train_augmented2.pkl', 'rb')))
         else:
