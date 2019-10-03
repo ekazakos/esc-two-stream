@@ -6,7 +6,9 @@ import pickle
 
 class UrbanSound8KDataset(data.Dataset):
     def __init__(self, dataset_path, mode):
-        self.dataset = pickle.load(open(dataset_path, 'rb'))
+        self.dataset = []
+        self.dataset.append(pickle.load(open(dataset_path / 'dataset_train_augmented1.pkl', 'rb')))
+        self.dataset.append(pickle.load(open(dataset_path / 'dataset_train_augmented2.pkl', 'rb')))
         self.mode = mode
 
     def __getitem__(self, index):
