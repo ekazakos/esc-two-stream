@@ -59,12 +59,12 @@ def main():
     model = torch.nn.DataParallel(model, device_ids=None).to(device)
 
     train_loader = torch.utils.data.DataLoader(
-        UrbanSound8KDataset(args.train_pickle, 'train', args.mode),
+        UrbanSound8KDataset(args.train_pickle, args.mode),
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
     val_loader = torch.utils.data.DataLoader(
-        UrbanSound8KDataset(args.test_pickle, 'test', args.mode),
+        UrbanSound8KDataset(args.test_pickle, args.mode),
         batch_size=args.batch_size, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
