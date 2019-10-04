@@ -16,6 +16,7 @@ def print_accuracy(scores, labels, fname, mapping, average_segments=False):
         unique_fname = np.unique(fname)
         pred = np.zeros(unique_fname.shape[0])
         gt = np.zeros(unique_fname.shape[0])
+        print(scores.shape)
         for i, uid in enumerate(unique_fname):
             untrimmed_scores = scores[fname == uid]
             untrimmed_label = labels[fname == uid][0]
