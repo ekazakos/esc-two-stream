@@ -18,6 +18,8 @@ def print_accuracy(scores, labels, fname, mapping, average_segments=False):
         gt = np.zeros(unique_fname.shape[0])
         print(scores.shape)
         for i, uid in enumerate(unique_fname):
+            k = fname == uid
+            print(k);print(k.shape)
             untrimmed_scores = scores[fname == uid]
             untrimmed_label = labels[fname == uid][0]
             avg_untrimmed_scores = np.mean(untrimmed_scores, axis=0)
