@@ -64,7 +64,7 @@ def main():
         batch_size=1, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
-    net = torch.nn.DataParallel(net, device_ids=args.gpus).to(device)
+    net = torch.nn.DataParallel(net, device_ids=None).to(device)
     with torch.no_grad():
         net.eval()
 
