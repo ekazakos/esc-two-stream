@@ -60,7 +60,7 @@ def main():
     net.load_state_dict(base_dict)
 
     test_loader = torch.utils.data.DataLoader(
-        UrbanSound8KDataset(args.test_pickle, 'test', args.mode),
+        UrbanSound8KDataset(args.test_pickle, args.mode),
         batch_size=1, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
