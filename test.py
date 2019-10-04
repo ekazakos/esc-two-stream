@@ -13,7 +13,7 @@ import pickle
 
 def print_accuracy(scores, labels, mapping):
 
-    video_pred = [np.argmax(np.mean(score, axis=0)) for score in scores]
+    video_pred = [np.argmax(score) for score in scores]
     cf = confusion_matrix(labels, video_pred).astype(float)
     cls_cnt = cf.sum(axis=1)
     cls_hit = np.diag(cf)
@@ -25,7 +25,7 @@ def print_accuracy(scores, labels, mapping):
     print('Accuracy {:.02f}%'.format(acc * 100))
     print('Per-class accuracies:')
     for i in range(len(cls_acc)):
-        print('{}: {:.02f}'.format(mapping[i], cls_acc[i]))
+        print('{}: {:.02f}%'.format(mapping[i], cls_acc[i] * 100))
     print('Average Class Accuracy {:.02f}%'.format(np.mean(cls_acc) * 100))
 
 
