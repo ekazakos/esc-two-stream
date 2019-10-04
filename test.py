@@ -8,6 +8,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from dataset import UrbanSound8KDataset
 from models import ESCModel
 import numpy as np
+import pickle
 
 
 def print_accuracy(scores, labels, mapping):
@@ -87,7 +88,8 @@ def main():
 
     print_accuracy([res[0] for res in results],
                    [res[1] for res in results],
-                   args.mapping)
+                   pickle.load(open(args.mapping, 'rb')))
+
 
 if __name__ == '__main__':
     main()
