@@ -38,6 +38,7 @@ def main():
     parser.add_argument('--test_pickle')
     parser.add_argument('--mapping')
     parser.add_argument('--scores_root', type=str, default='scores')
+    parser.add_argument('--max_num', type=int, default=-1)
     parser.add_argument('--k', type=int, default=3)
     parser.add_argument('--dropout', type=float, default=0.7)
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
