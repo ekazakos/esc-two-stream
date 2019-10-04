@@ -11,16 +11,28 @@ import numpy as np
 import pickle
 
 
-def print_accuracy(scores, labels, mapping):
+def print_accuracy(scores, labels, fname, mapping, average_segments=False):
+    if average_segments:
+        unique_fname = np.unique(fname)
+        pred = np.zeros(unique_fname.shape[0])
+        gt = np.zeros(unique_fname.shape[0])
+        for i, uid in enumerate(unique_fname):
+            untrimmed_scores = scores[fname == uid]
+            untrimmed_label = labels[fname == uid][0]
+            avg_untrimmed_scores = np.mean(untrimmed_scores, axis=0)
+            pred[i] = np.argmax(avg_untrimmed_scores)
+            gt[i] = untrimmed_label
+    else:
+        pred = [np.argmax(score) for score in scores]
+        gt = labels
 
-    video_pred = [np.argmax(score) for score in scores]
-    cf = confusion_matrix(labels, video_pred).astype(float)
+    cf = confusion_matrix(gt, pred).astype(float)
     cls_cnt = cf.sum(axis=1)
     cls_hit = np.diag(cf)
     cls_cnt[cls_hit == 0] = 1  # to avoid divisions by zero
     cls_acc = cls_hit / cls_cnt
 
-    acc = accuracy_score(labels, video_pred)
+    acc = accuracy_score(gt, pred)
 
     print('Accuracy {:.02f}%'.format(acc * 100))
     print('Per-class accuracies:')
@@ -41,6 +53,7 @@ def main():
     parser.add_argument('--max_num', type=int, default=-1)
     parser.add_argument('--k', type=int, default=3)
     parser.add_argument('--dropout', type=float, default=0.7)
+    parser.add_argument('--average', action='store_true')
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
 
@@ -74,22 +87,24 @@ def main():
 
         proc_start_time = time.time()
         max_num = args.max_num if args.max_num > 0 else total_num
-        for i, (data, label) in enumerate(test_loader):
+        for i, (data, label, fname) in enumerate(test_loader):
             if i >= max_num:
                 break
             data = data.to(device)
             rst = net(data)
             rst = rst.cpu().numpy().squeeze()
             label_ = label.item()
-            results.append((rst, label_))
+            results.append((rst, label_, fname))
 
             cnt_time = time.time() - proc_start_time
             print('video {} done, total {}/{}, average {} sec/video'.format(
                 i, i + 1, total_num, float(cnt_time) / (i + 1)))
 
-    print_accuracy([res[0] for res in results],
-                   [res[1] for res in results],
-                   pickle.load(open(args.mapping, 'rb')))
+    print_accuracy(np.array([res[0] for res in results]),
+                   np.array([res[1] for res in results]),
+                   np.array([res[2] for res in results]),
+                   pickle.load(open(args.mapping, 'rb')),
+                   average_segments=args.average)
 
 
 if __name__ == '__main__':

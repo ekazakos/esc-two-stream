@@ -41,7 +41,8 @@ class UrbanSound8KDataset(data.Dataset):
                             self.dataset[index]['features']['spectral_contrast']))
             feature = (torch.from_numpy(lmc.astype(np.float32)).unsqueeze(0), torch.from_numpy(mc.astype(np.float32)).unsqueeze(0))
         label = self.dataset[index]['classID']
-        return feature, label
+        fname = self.dataset[index]['filename']
+        return feature, label, fname
 
     def __len__(self):
         return len(self.dataset)
