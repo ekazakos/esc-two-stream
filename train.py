@@ -6,6 +6,7 @@ import os
 import shutil
 from tensorboardX import SummaryWriter
 import torch
+from torch.optim.lr_scheduler import MultiStepLR
 from torch.nn.utils import clip_grad_norm_
 from models import ESCModel
 from dataset import UrbanSound8KDataset
@@ -22,8 +23,8 @@ parser.add_argument('-b', '--batch-size', default=32, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=0.001, type=float,
                     metavar='LR', help='initial learning rate')
-# parser.add_argument('--lr_steps', default=[20, 40], type=float, nargs="+",
-#                     metavar='LRSteps', help='epochs to decay learning rate by 10')
+parser.add_argument('--lr_steps', default=[20, 40], type=float, nargs="+",
+                    metavar='LRSteps', help='epochs to decay learning rate by 10')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
 parser.add_argument('--weight-decay', '--wd', default=5e-4, type=float,
@@ -74,8 +75,10 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(),
                                  lr=args.lr,
                                  weight_decay=args.weight_decay)
+    scheduler = MultiStepLR(optimizer, args.lr_steps, gamma=0.1)
 
     for epoch in range(args.epochs):
+        scheduler.step()
         train(train_loader, model, criterion, optimizer, epoch, device)
 
         # evaluate on validation set
