@@ -41,7 +41,7 @@ training_iterations = 0
 
 experiment_name = '_'.join(('mode=' + args.mode,
                             'ep=' + str(args.epochs),
-                            'b=' + str(args.b),
+                            'b=' + str(args.batch_size),
                             'fold=' + str(args.fold)))
 experiment_dir = os.path.join(experiment_name, datetime.now().strftime('%b%d_%H-%M-%S'))
 runs_path = Path('./runs')
