@@ -33,13 +33,16 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--print-freq', '-p', default=20, type=int,
                     metavar='N', help='print frequency (default: 10)')
+parser.add_argument('--fold', type=int)
 args = parser.parse_args()
 
 best_prec1 = 0
 training_iterations = 0
 
 experiment_name = '_'.join(('mode=' + args.mode,
-                            'ep=' + str(args.epochs)))
+                            'ep=' + str(args.epochs),
+                            'b=' + str(args.b),
+                            'fold=' + str(args.fold)))
 experiment_dir = os.path.join(experiment_name, datetime.now().strftime('%b%d_%H-%M-%S'))
 runs_path = Path('./runs')
 if not runs_path.exists():
