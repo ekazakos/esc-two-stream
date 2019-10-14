@@ -39,8 +39,9 @@ class ESCModel(nn.Module):
         x = self.conv2(x)
         x = self.batch_norm2(x)
         x = self.relu2(x)
-        x = self.max_pool2(x)
         x = self.dropout2(x)
+        x = self.max_pool2(x)
+
 
         x = self.conv3(x)
         x = self.batch_norm3(x)
@@ -49,8 +50,9 @@ class ESCModel(nn.Module):
         x = self.conv4(x)
         x = self.batch_norm4(x)
         x = self.relu4(x)
-        x = self.max_pool4(x)
         x = self.dropout4(x)
+        x = self.max_pool4(x)
+
 
         x = x.flatten(1)
         x = self.fc1(x)
