@@ -58,7 +58,7 @@ def main():
 
     if args.mode != 'LMC+MC':
         print(args.mode)
-        model = ESCModel()
+        model = ESCModel(mode=args.mode)
 
     model = torch.nn.DataParallel(model, device_ids=None).to(device)
 
