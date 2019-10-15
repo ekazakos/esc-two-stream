@@ -117,7 +117,7 @@ def main():
         lmc_scores = np.array([res[0] for res in lmc_results])
         mc_scores = np.array([res[0] for res in mc_results])
         print(np.array([lmc_scores, mc_scores]).shape)
-        scores = np.mean(np.array([lmc_scores, mc_scores], axis=0))
+        scores = np.mean(np.array([lmc_scores, mc_scores]), axis=0)
         labels = np.array([res[1] for res in lmc_results])
         fname = np.array([res[2] for res in lmc_results])
 
