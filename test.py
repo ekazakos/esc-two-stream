@@ -12,23 +12,43 @@ import numpy as np
 import pickle
 
 
-def print_accuracy(scores, labels, fname, mapping, average_segments=False):
-    if average_segments:
-        unique_fname = np.unique(fname)
-        pred = np.zeros(unique_fname.shape[0])
-        gt = np.zeros(unique_fname.shape[0])
-        for i, uid in enumerate(unique_fname):
-            idx = fname == uid
-            idx = idx.squeeze()
-            untrimmed_scores = scores[idx]
-            untrimmed_label = labels[idx][0]
-            avg_untrimmed_scores = np.mean(untrimmed_scores, axis=0)
-            pred[i] = np.argmax(avg_untrimmed_scores)
-            gt[i] = untrimmed_label
+def print_accuracy(scores, labels, fname, mapping, average_segments=False, fuse=False):
+    if not fuse:
+        if average_segments:
+            unique_fname = np.unique(fname)
+            pred = np.zeros(unique_fname.shape[0])
+            gt = np.zeros(unique_fname.shape[0])
+            for i, uid in enumerate(unique_fname):
+                idx = fname == uid
+                idx = idx.squeeze()
+                untrimmed_scores = scores[idx]
+                untrimmed_label = labels[idx][0]
+                avg_untrimmed_scores = np.mean(untrimmed_scores, axis=0)
+                pred[i] = np.argmax(avg_untrimmed_scores)
+                gt[i] = untrimmed_label
+        else:
+            pred = [np.argmax(score) for score in scores]
+            gt = labels
     else:
-        pred = [np.argmax(score) for score in scores]
-        gt = labels
-
+        if average_segments:
+            unique_fname = np.unique(fname)
+            pred = np.zeros(unique_fname.shape[0])
+            gt = np.zeros(unique_fname.shape[0])
+            for i, uid in enumerate(unique_fname):
+                idx = fname == uid
+                idx = idx.squeeze()
+                untrimmed_scores_lmc = scores[0][idx]
+                untrimmed_scores_mc = scores[1][idx]
+                untrimmed_label = labels[idx][0]
+                avg_untrimmed_scores_lmc = np.mean(untrimmed_scores_lmc, axis=0)
+                avg_untrimmed_scores_mc = np.mean(untrimmed_scores_mc, axis=0)
+                print(np.array([avg_untrimmed_scores_lmc, avg_untrimmed_scores_mc]).shape)
+                avg_untrimmed_scores = np.mean(np.array([avg_untrimmed_scores_lmc, avg_untrimmed_scores_mc]), axis=0)
+                pred[i] = np.argmax(avg_untrimmed_scores)
+                gt[i] = untrimmed_label
+        else:
+            pred = [np.argmax(score) for score in scores]
+            gt = labels
     cf = confusion_matrix(gt, pred).astype(float)
     cls_cnt = cf.sum(axis=1)
     cls_hit = np.diag(cf)
@@ -116,8 +136,7 @@ def main():
         mc_results = pickle.load(open(args.scores_input[1], 'rb'))
         lmc_scores = np.array([res[0] for res in lmc_results])
         mc_scores = np.array([res[0] for res in mc_results])
-        print(np.array([lmc_scores, mc_scores]).shape)
-        scores = np.mean(np.array([lmc_scores, mc_scores]), axis=0)
+        scores = np.array([lmc_scores, mc_scores])
         labels = np.array([res[1] for res in lmc_results])
         fname = np.array([res[2] for res in lmc_results])
 
