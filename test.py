@@ -68,7 +68,7 @@ def main():
 
     if args.mode != 'LMC+MC':
         print(args.mode)
-        net = ESCModel()
+        net = ESCModel(mode=args.mode)
 
         weights = '{weights_dir}/model_best.pth.tar'.format(
             weights_dir=args.weights_dir)
