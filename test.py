@@ -60,8 +60,8 @@ def print_accuracy(scores, labels, fname, mapping, average_segments=False, fuse=
                 untrimmed_scores_lmc = scores[0][idx]
                 untrimmed_scores_mc = scores[1][idx]
                 untrimmed_label = labels[idx][0]
-                avg_untrimmed_scores_lmc = softmax(np.mean(untrimmed_scores_lmc, axis=0))
-                avg_untrimmed_scores_mc = softmax(np.mean(untrimmed_scores_mc, axis=0))
+                avg_untrimmed_scores_lmc = np.mean(softmax(untrimmed_scores_lmc), axis=0)
+                avg_untrimmed_scores_mc = np.mean(softmax(untrimmed_scores_mc), axis=0)
                 avg_untrimmed_scores = np.mean(np.array([avg_untrimmed_scores_lmc, avg_untrimmed_scores_mc]), axis=0)
                 pred[i] = np.argmax(avg_untrimmed_scores)
                 gt[i] = untrimmed_label
