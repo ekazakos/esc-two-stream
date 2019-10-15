@@ -71,7 +71,7 @@ def main():
         net = ESCModel()
 
         weights = '{weights_dir}/model_best.pth.tar'.format(
-            weights_dir=args.weights_dir[0])
+            weights_dir=args.weights_dir)
         checkpoint = torch.load(weights)
         print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
 
