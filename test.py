@@ -12,6 +12,26 @@ import numpy as np
 import pickle
 
 
+def softmax(x):
+    """
+    >>> res = softmax(np.array([0, 200, 10]))
+    >>> np.sum(res)
+    1.0
+    >>> np.all(np.abs(res - np.array([0, 1, 0])) < 0.0001)
+    True
+    >>> res = softmax(np.array([[0, 200, 10], [0, 10, 200], [200, 0, 10]]))
+    >>> np.sum(res, axis=1)
+    array([ 1.,  1.,  1.])
+    >>> res = softmax(np.array([[0, 200, 10], [0, 10, 200]]))
+    >>> np.sum(res, axis=1)
+    array([ 1.,  1.])
+    """
+    if x.ndim == 1:
+        x = x.reshape((1, -1))
+    max_x = np.max(x, axis=1).reshape((-1, 1))
+    exp_x = np.exp(x - max_x)
+    return exp_x / np.sum(exp_x, axis=1).reshape((-1, 1))
+
 def print_accuracy(scores, labels, fname, mapping, average_segments=False, fuse=False):
     if not fuse:
         if average_segments:
@@ -40,9 +60,8 @@ def print_accuracy(scores, labels, fname, mapping, average_segments=False, fuse=
                 untrimmed_scores_lmc = scores[0][idx]
                 untrimmed_scores_mc = scores[1][idx]
                 untrimmed_label = labels[idx][0]
-                avg_untrimmed_scores_lmc = np.mean(untrimmed_scores_lmc, axis=0)
-                avg_untrimmed_scores_mc = np.mean(untrimmed_scores_mc, axis=0)
-                print(np.array([avg_untrimmed_scores_lmc, avg_untrimmed_scores_mc]).shape)
+                avg_untrimmed_scores_lmc = softmax(np.mean(untrimmed_scores_lmc, axis=0))
+                avg_untrimmed_scores_mc = softmax(np.mean(untrimmed_scores_mc, axis=0))
                 avg_untrimmed_scores = np.mean(np.array([avg_untrimmed_scores_lmc, avg_untrimmed_scores_mc]), axis=0)
                 pred[i] = np.argmax(avg_untrimmed_scores)
                 gt[i] = untrimmed_label
