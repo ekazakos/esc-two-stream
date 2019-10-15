@@ -4,6 +4,7 @@ import time
 import torch.nn.parallel
 import torch.optim
 from sklearn.metrics import confusion_matrix, accuracy_score
+from pathlib import Path
 
 from dataset import UrbanSound8KDataset
 from models import ESCModel
@@ -49,6 +50,8 @@ def main():
                                      " testing")
     parser.add_argument('mode', choices=['LMC', 'MC', 'MLMC', 'LMC+MC'])
     parser.add_argument('weights_dir', type=str)
+    parser.add_argument('--scores_input', nargs='+', type=Path)
+    parser.add_argument('--scores_output', type=Path)
     parser.add_argument('--test_pickle')
     parser.add_argument('--mapping')
     parser.add_argument('--scores_root', type=str, default='scores')
@@ -67,44 +70,60 @@ def main():
         print(args.mode)
         net = ESCModel()
 
-    weights = '{weights_dir}/model_best.pth.tar'.format(
-        weights_dir=args.weights_dir)
-    checkpoint = torch.load(weights)
-    print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
+        weights = '{weights_dir}/model_best.pth.tar'.format(
+            weights_dir=args.weights_dir[0])
+        checkpoint = torch.load(weights)
+        print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
 
-    base_dict = {'.'.join(k.split('.')[1:]): v for k, v in list(checkpoint['state_dict'].items())}
-    net.load_state_dict(base_dict)
+        base_dict = {'.'.join(k.split('.')[1:]): v for k, v in list(checkpoint['state_dict'].items())}
+        net.load_state_dict(base_dict)
 
-    test_loader = torch.utils.data.DataLoader(
-        UrbanSound8KDataset(args.test_pickle, args.mode),
-        batch_size=1, shuffle=False,
-        num_workers=args.workers, pin_memory=True)
+        test_loader = torch.utils.data.DataLoader(
+            UrbanSound8KDataset(args.test_pickle, args.mode),
+            batch_size=1, shuffle=False,
+            num_workers=args.workers, pin_memory=True)
 
-    net = torch.nn.DataParallel(net, device_ids=None).to(device)
-    with torch.no_grad():
-        net.eval()
+        net = torch.nn.DataParallel(net, device_ids=None).to(device)
+        with torch.no_grad():
+            net.eval()
 
-        results = []
-        total_num = len(test_loader.dataset)
+            results = []
+            total_num = len(test_loader.dataset)
 
-        proc_start_time = time.time()
-        max_num = args.max_num if args.max_num > 0 else total_num
-        for i, (data, label, fname) in enumerate(test_loader):
-            if i >= max_num:
-                break
-            data = data.to(device)
-            rst = net(data)
-            rst = rst.cpu().numpy().squeeze()
-            label_ = label.item()
-            results.append((rst, label_, fname))
+            proc_start_time = time.time()
+            max_num = args.max_num if args.max_num > 0 else total_num
+            for i, (data, label, fname) in enumerate(test_loader):
+                if i >= max_num:
+                    break
+                data = data.to(device)
+                rst = net(data)
+                rst = rst.cpu().numpy().squeeze()
+                label_ = label.item()
+                results.append((rst, label_, fname))
 
-            cnt_time = time.time() - proc_start_time
-            print('video {} done, total {}/{}, average {} sec/video'.format(
-                i, i + 1, total_num, float(cnt_time) / (i + 1)))
+                cnt_time = time.time() - proc_start_time
+                print('video {} done, total {}/{}, average {} sec/video'.format(
+                    i, i + 1, total_num, float(cnt_time) / (i + 1)))
 
-    print_accuracy(np.array([res[0] for res in results]),
-                   np.array([res[1] for res in results]),
-                   np.array([res[2] for res in results]),
+        if not args.scores_output.parent.exists():
+            args.scores_output.parent.mkdir(parents=True)
+        pickle.dump(results, open(args.scores_output, 'wb'))
+        scores = np.array([res[0] for res in results])
+        labels = np.array([res[1] for res in results])
+        fname = np.array([res[2] for res in results])
+    else:
+        lmc_results = pickle.load(open(args.scores_input[0], 'rb'))
+        mc_results = pickle.load(open(args.scores_input[1], 'rb'))
+        lmc_scores = np.array([res[0] for res in lmc_results])
+        mc_scores = np.array([res[0] for res in mc_results])
+        print(np.array([lmc_scores, mc_scores]).shape)
+        scores = np.mean(np.array([lmc_scores, mc_scores], axis=0))
+        labels = np.array([res[1] for res in lmc_results])
+        fname = np.array([res[2] for res in lmc_results])
+
+    print_accuracy(scores,
+                   labels,
+                   fname,
                    pickle.load(open(args.mapping, 'rb')),
                    average_segments=args.average)
 
