@@ -131,6 +131,12 @@ def main():
         scores = np.array([res[0] for res in results])
         labels = np.array([res[1] for res in results])
         fname = np.array([res[2] for res in results])
+
+        print_accuracy(scores,
+                       labels,
+                       fname,
+                       pickle.load(open(args.mapping, 'rb')),
+                       average_segments=args.average)
     else:
         lmc_results = pickle.load(open(args.scores_input[0], 'rb'))
         mc_results = pickle.load(open(args.scores_input[1], 'rb'))
@@ -140,11 +146,12 @@ def main():
         labels = np.array([res[1] for res in lmc_results])
         fname = np.array([res[2] for res in lmc_results])
 
-    print_accuracy(scores,
-                   labels,
-                   fname,
-                   pickle.load(open(args.mapping, 'rb')),
-                   average_segments=args.average)
+        print_accuracy(scores,
+                       labels,
+                       fname,
+                       pickle.load(open(args.mapping, 'rb')),
+                       average_segments=args.average,
+                       fuse=True)
 
 
 if __name__ == '__main__':
