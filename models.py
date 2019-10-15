@@ -3,7 +3,7 @@ from torch import nn
 
 
 class ESCModel(nn.Module):
-    def __init__(self):
+    def __init__(self, mode='LMC'):
         super(ESCModel, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, stride=1, padding=1)
         self.batch_norm1 = nn.BatchNorm2d(32)
@@ -25,8 +25,10 @@ class ESCModel(nn.Module):
         self.max_pool4 = nn.MaxPool2d(2)
         self.dropout4 = nn.Dropout(p=0.5)
 
-
-        self.fc1 = nn.Linear(64*10*21, 1024)
+        if mode!= 'MLMC':
+            self.fc1 = nn.Linear(64*10*21, 1024)
+        else:
+            self.fc1 = nn.Linear(64*10*36, 1024)
         self.sigm = nn.Sigmoid()
         self.dropout_fc1 = nn.Dropout(p=0.5)
         self.fc2 = nn.Linear(1024, 10)
