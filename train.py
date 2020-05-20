@@ -37,9 +37,7 @@ args = parser.parse_args()
 best_prec1 = 0
 training_iterations = 0
 
-experiment_name = '_'.join(('mode=' + args.mode,
-                            'ep=' + str(args.epochs),
-                            'b=' + str(args.batch_size)))
+experiment_name = 'mode=' + args.mode
 experiment_dir = os.path.join(experiment_name, datetime.now().strftime('%b%d_%H-%M-%S'))
 runs_path = Path('./runs')
 if not runs_path.exists():

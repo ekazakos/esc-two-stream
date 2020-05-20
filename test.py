@@ -87,7 +87,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="ESC Fusion model testing")
     parser.add_argument('mode', choices=['LMC', 'MC', 'MLMC', 'LMC+MC'])
-    parser.add_argument('weights_dir', type=str)
+    parser.add_argument('--weights_dir', type=str)
     parser.add_argument('--scores_input', nargs='+', type=Path)
     parser.add_argument('--scores_output', type=Path)
     parser.add_argument('--test_pickle')
