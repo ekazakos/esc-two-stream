@@ -1,8 +1,7 @@
 ## Applied Deep Learning - Student Project 2019/2020
 ### University of Bristol, Dept. of Computer Science
 
-This is a reimplementation of the paper: "Su, Yu et al. “Environment Sound Classification Using a Two-Stream CNN Based on 
-Decision-Level Fusion.” Sensors (Basel, Switzerland) vol. 19,7 1733. 11 Apr. 2019, doi:10.3390/s19071733" [link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6479959/)
+This is a reimplementation of the paper: "Yu Su, Ke Zhang, Jingyu Wang, Kurosh Madani, **Environment Sound Classification Using a Two-Stream CNN Based on Decision-Level Fusion**, Sensors 2019" [link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6479959/)
 
 For two stream fusion we simply average the predictions of LMC and MC networks.
 
