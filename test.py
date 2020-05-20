@@ -85,18 +85,14 @@ def print_accuracy(scores, labels, fname, mapping, average_segments=False, fuse=
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Standard video-level" +
-                                     " testing")
+    parser = argparse.ArgumentParser(description="ESC Fusion model testing")
     parser.add_argument('mode', choices=['LMC', 'MC', 'MLMC', 'LMC+MC'])
     parser.add_argument('weights_dir', type=str)
     parser.add_argument('--scores_input', nargs='+', type=Path)
     parser.add_argument('--scores_output', type=Path)
     parser.add_argument('--test_pickle')
     parser.add_argument('--mapping')
-    parser.add_argument('--scores_root', type=str, default='scores')
     parser.add_argument('--max_num', type=int, default=-1)
-    parser.add_argument('--k', type=int, default=3)
-    parser.add_argument('--dropout', type=float, default=0.7)
     parser.add_argument('--average', action='store_true')
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')

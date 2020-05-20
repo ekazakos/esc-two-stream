@@ -7,23 +7,22 @@ import shutil
 from tensorboardX import SummaryWriter
 import torch
 from torch.optim.lr_scheduler import MultiStepLR
-from torch.nn.utils import clip_grad_norm_
 from models import ESCModel
 from dataset import UrbanSound8KDataset
 
 
-parser = argparse.ArgumentParser(description='ESC Fusion model')
+parser = argparse.ArgumentParser(description='ESC Fusion model training')
 
 parser.add_argument('mode', choices=['LMC', 'MC', 'MLMC', 'LMC+MC'])
 parser.add_argument('--train_pickle', type=Path)
 parser.add_argument('--test_pickle', type=Path)
-parser.add_argument('--epochs', default=100, type=int, metavar='N',
+parser.add_argument('--epochs', default=50, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('-b', '--batch-size', default=32, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=0.001, type=float,
                     metavar='LR', help='initial learning rate')
-parser.add_argument('--lr_steps', default=[20, 40], type=float, nargs="+",
+parser.add_argument('--lr_steps', default=[100], type=float, nargs="+",
                     metavar='LRSteps', help='epochs to decay learning rate by 10')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
@@ -33,7 +32,6 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--print-freq', '-p', default=20, type=int,
                     metavar='N', help='print frequency (default: 10)')
-parser.add_argument('--fold', type=int)
 args = parser.parse_args()
 
 best_prec1 = 0
@@ -41,8 +39,7 @@ training_iterations = 0
 
 experiment_name = '_'.join(('mode=' + args.mode,
                             'ep=' + str(args.epochs),
-                            'b=' + str(args.batch_size),
-                            'fold=' + str(args.fold)))
+                            'b=' + str(args.batch_size)))
 experiment_dir = os.path.join(experiment_name, datetime.now().strftime('%b%d_%H-%M-%S'))
 runs_path = Path('./runs')
 if not runs_path.exists():
