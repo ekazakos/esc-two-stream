@@ -1,4 +1,4 @@
-## Applied Deep Learning - Student Project 2019/2020
+## COMSM0018 Applied Deep Learning - Student Project 2019/2020
 ### University of Bristol, Dept. of Computer Science
 
 This is a reimplementation of the paper: "Yu Su, Ke Zhang, Jingyu Wang, Kurosh Madani, **Environment Sound Classification Using a Two-Stream CNN Based on Decision-Level Fusion**, Sensors 2019" [link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6479959/)
